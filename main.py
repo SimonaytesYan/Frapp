@@ -18,6 +18,9 @@ from kivy.uix.camera import Camera
 from  kivy.uix.togglebutton import ToggleButton
 import time
 from kivy.uix.screenmanager import ScreenManager, Screen
+from nnc import *
+
+
 Builder.load_string('''
 <CameraClick>:
     BoxLayout:
@@ -68,13 +71,13 @@ class CameraClick(PageLayout):
         according to their captured time and date.
         '''
         camera = self.ids['camera']
-        camera.export_to_png("IMG_now.jpeg")
+        camera.export_to_png("IMG_now.jpg")
         print("Captured")
     def show_all(self):
         print(n)
         if n!= 0:
             #self.ids['gl'].rows = 3
-            for i in range(1, n):
+            for i in range(1, n+1):
                 self.ids['gl'].add_widget(Label(text =data[i]))
                 #self.ids["label_{}".format(i)].text = data[i]
                 print(data[i])
