@@ -7,6 +7,7 @@ with open("db\\number.txt", "r") as f:
 n = int(data[0])
 print(n)
 print(data)
+from kivy.clock import Clock
 from kivy.app import App
 from kivy.lang import Builder
 from kivy.uix.label import Label
@@ -35,23 +36,19 @@ Builder.load_string('''
             orintation: 'vertical'
             ToggleButton:
                 text: 'Play'
-                on_press: camera.play = not camera.play
+                on_press: root.play()
                 size_hint_y: None
                 height: '48px'
-            Button:
-                text: 'Capture'
-                size_hint_y: None
-                height: '48px'
-                on_press: root.capture()
             Button:
                 size_hint_y: None
                 height: '48px'
                 text: 'All image'
                 on_press: root.show_all()
             Button:
-                text: 'Out'
                 size_hint_y: None
-                on_press: root.out()
+                height: '48px'
+                text: 'Add new'
+                on_press: root.show_all()
     GridLayout:
         id: gl
         cols: 1
@@ -65,13 +62,16 @@ class TestCamera(App):
 
         return CameraClick()
 class CameraClick(PageLayout):
-    def capture(self):
+    def play(self):
+        event = Clock.schedule_interval(self.capture, 20)
+        if self.ids['camera'].play:
+            event.cancel()
+        self.ids['camera'].play = not  self.ids['camera'].play
+
+    def capture(self, _):
         global n
         global differences
-        '''
-        Function to capture the images and give them the names
-        according to their captured time and date.
-        '''
+
         camera = self.ids['camera']
         camera.export_to_png("IMG_now.jpg")
 
@@ -80,6 +80,9 @@ class CameraClick(PageLayout):
             if differences[i] == -1:
                 print("Face not found")
         print("Captured")
+
+    def add(self):
+        pass
     def show_all(self):
         print(n)
         if n!= 0:
