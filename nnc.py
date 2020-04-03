@@ -3,11 +3,11 @@ from skimage import io
 from scipy.spatial import distance
 
 #извлекаем модели
-def what_difference():
+def what_difference(n):
     sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
     facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
     detector = dlib.get_frontal_face_detector()
-    img = io.imread('db\\IMG_3.jpg')
+    img = io.imread('db\\IMG_{}.jpg'.format(n))
 
     #Вывод фотографии
     win1 = dlib.image_window()
@@ -30,7 +30,7 @@ def what_difference():
     face_descriptor1 = facerec.compute_face_descriptor(img, shape)
 
     #Второе лицо
-    img = io.imread("db\\IMG_1.jpg")
+    img = io.imread("IMG_now.jpg")
     win2 = dlib.image_window()
     win2.clear_overlay()
     win2.set_image(img)

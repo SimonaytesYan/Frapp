@@ -1,5 +1,6 @@
 n = 0
 data = []
+differences = []
 with open("db\\number.txt", "r") as f:
     for line in f:
         data.append(line)
@@ -66,19 +67,27 @@ class TestCamera(App):
 class CameraClick(PageLayout):
     def capture(self):
         global n
+        global differences
         '''
         Function to capture the images and give them the names
         according to their captured time and date.
         '''
         camera = self.ids['camera']
         camera.export_to_png("IMG_now.jpg")
+
+        for i in range(0, n):
+            differences.append(what_difference(i))
+            if differences[i] == -1:
+                print("Face not found")
         print("Captured")
     def show_all(self):
         print(n)
         if n!= 0:
             #self.ids['gl'].rows = 3
-            for i in range(1, n+1):
-                self.ids['gl'].add_widget(Label(text =data[i]))
+            self.ids['gl'].clear_widgets()
+            for i in range(1, n):
+                self.ids['gl'].add_widget(Label(text = data[i]))
+                self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
                 #self.ids["label_{}".format(i)].text = data[i]
                 print(data[i])
                 print(i)
