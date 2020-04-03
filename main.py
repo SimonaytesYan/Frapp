@@ -1,8 +1,14 @@
 n = 0
-f = open('db\\number.txt', 'r')
-n = int(f.read())
+data = []
+with open("db\\number.txt", "r") as f:
+    for line in f:
+        data.append(line)
+n = int(data[0])
+print(n)
+print(data)
 from kivy.app import App
 from kivy.lang import Builder
+from kivy.uix.label import Label
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.pagelayout import PageLayout
@@ -44,7 +50,7 @@ Builder.load_string('''
                 on_press: root.out()
     GridLayout:
         id: gl
-        cols: 3
+        cols: 1
 
 ''')
 
@@ -62,17 +68,16 @@ class CameraClick(PageLayout):
         according to their captured time and date.
         '''
         camera = self.ids['camera']
-        camera.export_to_png("db\IMG_{}.jpeg".format(n))
-        n+=1
-        f = open('db\\number.txt', 'w')
-        f.write(str(n))
+        camera.export_to_png("IMG_now.jpeg")
         print("Captured")
     def show_all(self):
-        
+        print(n)
         if n!= 0:
             #self.ids['gl'].rows = 3
-            for i in range(n):
-                self.ids['gl'].add_widget(Image(source="db\IMG_{}.jpeg".format(i)))
+            for i in range(1, n):
+                self.ids['gl'].add_widget(Label(text =data[i]))
+                #self.ids["label_{}".format(i)].text = data[i]
+                print(data[i])
                 print(i)
         else:
             print("Изображений не найдено")
