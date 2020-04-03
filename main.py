@@ -19,6 +19,7 @@ from kivy.uix.image import Image
 from kivy.uix.camera import Camera
 from  kivy.uix.togglebutton import ToggleButton
 import time
+import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
 from nnc import *
 
@@ -48,7 +49,7 @@ Builder.load_string('''
                 size_hint_y: None
                 height: '48px'
                 text: 'Add new'
-                on_press: root.show_all()
+                on_press: root.add()
     GridLayout:
         id: gl
         cols: 1
@@ -82,7 +83,10 @@ class CameraClick(PageLayout):
         print("Captured")
 
     def add(self):
-        pass
+        global n
+        n+=1
+        PATH = "D:\Small"
+        add_new(n,PATH)
     def show_all(self):
         print(n)
         if n!= 0:
