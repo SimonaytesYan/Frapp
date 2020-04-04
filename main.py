@@ -16,11 +16,10 @@ import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
 from nnc import *
-
 n = 0
 data = []
 differences = []
-with open(os.join.path("db", "number.txt"), "r") as f:
+with open(os.path.join("db", "number.txt"), "r") as f:
     for line in f:
         data.append(line)
 n = int(data[0])
@@ -28,7 +27,6 @@ print(n)
 print(data)
 
 
-os.path.join()
 Builder.load_string('''
 <CameraClick>:
     BoxLayout:
@@ -55,16 +53,23 @@ Builder.load_string('''
                 size_hint_y: None
                 height: '48px'
                 text: 'Add new'
-                on_press: root.add(input_number.text)
+                on_press: root.add(input_path.text, input_name.text)
             BoxLayout:
                 orintation: 'vertical'
+                Label:
+                    text: "name"
+                    size_hint: (1, .5)
+                TextInput:
+                    size_hint_y: None
+                    size_hint_x: 1
+                    id: input_name
                 Label:
                     text: "path"
                     size_hint: (1, .5)
                 TextInput:
                     size_hint_y: None
                     size_hint_x: 1
-                    id: input_number
+                    id: input_path
     GridLayout:
         id: gl
         cols: 1
@@ -97,21 +102,32 @@ class CameraClick(PageLayout):
                 print("Face not found")
         print("Captured")
 
-    def add(self, path):
+    def add(self, path, name):
         global n
         n+= 1
-        update_db(n)
+        data.append(str(name)+"\n")
+        data[0]  = str(n) + "\n"
+        f = open(os.path.join("db", "number.txt"), "w")
+        for i in data:
+            f.write(i)
+        update_db(n, path)
     def show_all(self):
         print(n)
         if n!= 0:
-            #self.ids['gl'].rows = 3
-            self.ids['gl'].clear_widgets()
-            for i in range(1, n+1):
-                self.ids['gl'].add_widget(Label(text = data[i]))
-                self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
-                #self.ids["label_{}".format(i)].text = data[i]
-                print(data[i])
-                print(i)
+            if differences !=  []:
+                #self.ids['gl'].rows = 3
+                self.ids['gl'].clear_widgets()
+                for i in range(1, n):
+                    self.ids['gl'].add_widget(Label(text = data[i]))
+                    if differences[i-1] != -1:
+                        self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
+                        #self.ids["label_{}".format(i)].text = data[i]
+                        print(data[i])
+                        print(i)
+                    else:
+                        print("Лицо на изображении не найдено")
+            else:
+                print("Сделайте фото")
         else:
             print("Изображений не найдено")
     def out(self):
