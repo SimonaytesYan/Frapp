@@ -18,6 +18,7 @@ from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.camera import Camera
 from  kivy.uix.togglebutton import ToggleButton
+from kivy.uix.textinput import TextInput
 import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
@@ -49,7 +50,13 @@ Builder.load_string('''
                 size_hint_y: None
                 height: '48px'
                 text: 'Add new'
-                on_press: root.add()
+                on_press: root.add(input_number.text)
+            BoxLayout:
+                orintation: 'vertical'
+                Label:
+                    text: "number of new photos"
+                TextInput:
+                    id: input_number
     GridLayout:
         id: gl
         cols: 1
@@ -82,17 +89,16 @@ class CameraClick(PageLayout):
                 print("Face not found")
         print("Captured")
 
-    def add(self):
+    def add(self, numb):
         global n
-        n+=1
-        PATH = "D:\Small"
-        add_new(n,PATH)
+        n+= numb
+        update_db(n)
     def show_all(self):
         print(n)
         if n!= 0:
             #self.ids['gl'].rows = 3
             self.ids['gl'].clear_widgets()
-            for i in range(1, n):
+            for i in range(1, n+1):
                 self.ids['gl'].add_widget(Label(text = data[i]))
                 self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
                 #self.ids["label_{}".format(i)].text = data[i]

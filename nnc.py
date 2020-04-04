@@ -3,50 +3,35 @@ from skimage import io
 from scipy.spatial import distance
 
 
-def add_new(n, path):
-    f = open("db\\IMG_{}.txt".format(n), "w")
-    sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-    facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
-    detector = dlib.get_frontal_face_detector()
-    img = io.imread('db\\IMG_{}.jpg'.format(n))
-    dets = detector(img, 1)
-    print(dets)
-    for k, d in enumerate(dets):
-        shape = sp(img, d)
+def update_db(n):
+    for i in range(n):
+        
+        sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+        facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
+        detector = dlib.get_frontal_face_detector()
+        img = io.imread('db\\IMG_{}.jpg'.format(i))
+        dets = detector(img, 1)
+        print(dets)
+        for k, d in enumerate(dets):
+            shape = sp(img, d)
 
-    #Извлекаем дескриптор из лица
-    face_descriptor1 = facerec.compute_face_descriptor(img, shape)
-    for i in face_descriptor1:
-        f.write(str(i))
-        f.write("\n")
+        #Извлекаем дескриптор из лица
+        face_descriptor1 = facerec.compute_face_descriptor(img, shape)
+        #записываем дескриптор в файл
+        f = open("db\\IMG_{}.txt".format(i), "w")
+        for i in face_descriptor1:
+            f.write(str(i))
+            f.write("\n")
 
 def what_difference(n):
     #извлекаем модели
     sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
     facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
     detector = dlib.get_frontal_face_detector()
-    img = io.imread('db\\IMG_{}.jpg'.format(n))
-
-    #Вывод фотографии
-    win1 = dlib.image_window()
-    win1.clear_overlay()
-    win1.set_image(img)
-
-    #Находим лицо на фотографии
-    dets = detector(img, 1)
-    print(dets)
-    for k, d in enumerate(dets):
-        
-        print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
-            k, d.left(), d.top(), d.right(), d.bottom()))
-        shape = sp(img, d)
-        win1.clear_overlay()
-        win1.add_overlay(d)
-        win1.add_overlay(shape)
-
-    #Извлекаем дескриптор из лица
-    face_descriptor1 = facerec.compute_face_descriptor(img, shape)
-
+    face_descriptor1 = []
+    with open("db\\IMG_{}.txt".format(n), "r") as f:
+        for line in f:
+            face_descriptor1.append([float(x) for x in line.split()])
     #Второе лицо
     img = io.imread("IMG_now.jpg")
     win2 = dlib.image_window()
@@ -70,7 +55,5 @@ def what_difference(n):
         print(a)
         return a
     else:
-        print("Лицо на изображении не найдено")
-        a = -1
-        return a
+        return -1
     
