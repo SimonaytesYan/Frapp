@@ -1,12 +1,5 @@
-n = 0
-data = []
-differences = []
-with open("db\\number.txt", "r") as f:
-    for line in f:
-        data.append(line)
-n = int(data[0])
-print(n)
-print(data)
+
+import os
 from kivy.clock import Clock
 from kivy.app import App
 from kivy.lang import Builder
@@ -24,18 +17,30 @@ import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
 from nnc import *
 
+n = 0
+data = []
+differences = []
+with open(os.join.path("db", "number.txt"), "r") as f:
+    for line in f:
+        data.append(line)
+n = int(data[0])
+print(n)
+print(data)
 
+
+os.path.join()
 Builder.load_string('''
 <CameraClick>:
     BoxLayout:
         id: lol
-        orintation: 'horizontal'
+        orintation: 'vertical'
         Camera:
             id: camera
             resolution: (640, 480)
             play: False
+            size_hint: (1, .5)
         BoxLayout:
-            orintation: 'vertical'
+            #orintation: 'horizontal'
             ToggleButton:
                 text: 'Play'
                 on_press: root.play()
@@ -54,8 +59,11 @@ Builder.load_string('''
             BoxLayout:
                 orintation: 'vertical'
                 Label:
-                    text: "number of new photos"
+                    text: "path"
+                    size_hint: (1, .5)
                 TextInput:
+                    size_hint_y: None
+                    size_hint_x: 1
                     id: input_number
     GridLayout:
         id: gl
@@ -89,9 +97,9 @@ class CameraClick(PageLayout):
                 print("Face not found")
         print("Captured")
 
-    def add(self, numb):
+    def add(self, path):
         global n
-        n+= numb
+        n+= 1
         update_db(n)
     def show_all(self):
         print(n)

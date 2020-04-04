@@ -1,15 +1,15 @@
 import dlib
 from skimage import io
 from scipy.spatial import distance
+import os
 
-
-def update_db(n):
+def update_db(n, path):
     for i in range(n):
         
         sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
         facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
         detector = dlib.get_frontal_face_detector()
-        img = io.imread('db\\IMG_{}.jpg'.format(i))
+        img = io.imread(os.join.path('db','IMG_{}.jpg'.format(i)))
         dets = detector(img, 1)
         print(dets)
         for k, d in enumerate(dets):
@@ -18,7 +18,7 @@ def update_db(n):
         #Извлекаем дескриптор из лица
         face_descriptor1 = facerec.compute_face_descriptor(img, shape)
         #записываем дескриптор в файл
-        f = open("db\\IMG_{}.txt".format(i), "w")
+        f = open(os.join.path("db","IMG_{}.txt".format(i)), "w")
         for i in face_descriptor1:
             f.write(str(i))
             f.write("\n")
@@ -29,7 +29,7 @@ def what_difference(n):
     facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
     detector = dlib.get_frontal_face_detector()
     face_descriptor1 = []
-    with open("db\\IMG_{}.txt".format(n), "r") as f:
+    with open(os.join.path("db","IMG_{}.txt".format(n)), "r") as f:
         for line in f:
             face_descriptor1.append([float(x) for x in line.split()])
     #Второе лицо
