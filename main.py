@@ -10,12 +10,13 @@ from kivy.uix.pagelayout import PageLayout
 from kivy.uix.gridlayout import GridLayout
 from kivy.uix.image import Image
 from kivy.uix.camera import Camera
-from  kivy.uix.togglebutton import ToggleButton
+from kivy.uix.togglebutton import ToggleButton
 from kivy.uix.textinput import TextInput
 import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
 from nnc import *
+f = True
 n = 0
 data = []
 differences = []
@@ -38,7 +39,7 @@ Builder.load_string('''
             play: False
             size_hint: (1, .5)
         BoxLayout:
-            #orintation: 'horizontal'
+            orintation: 'vertical'
             ToggleButton:
                 text: 'Play'
                 on_press: root.play()
@@ -84,27 +85,26 @@ class TestCamera(App):
         return CameraClick()
 class CameraClick(PageLayout):
     def play(self):
-        event = Clock.schedule_interval(self.capture, 20)
-        if self.ids['camera'].play:
-            event.cancel()
-        self.ids['camera'].play = not  self.ids['camera'].play
+        global f
+        if f:
+            event = Clock.schedule_interval(self.capture, 3)
+        f = False
 
+        self.ids['camera'].play = not self.ids['camera'].play
+        
     def capture(self, _):
-        global n
-        global differences
-
-        camera = self.ids['camera']
-        camera.export_to_png("IMG_now.jpg")
-
-        for i in range(0, n):
-            differences.append(what_difference(i))
-            if differences[i] == -1:
-                print("Face not found")
-        print("Captured")
+        if self.ids['camera'].play:
+            global differences
+            camera = self.ids['camera']
+            camera.export_to_png("IMG_now.jpg")
+            differences = what_difference(n)
+            print("Captured")
+        
+            
 
     def add(self, path, name):
         global n
-        n+= 1
+        n += 1
         data.append(str(name)+"\n")
         data[0]  = str(n) + "\n"
         f = open(os.path.join("db", "number.txt"), "w")
@@ -115,14 +115,14 @@ class CameraClick(PageLayout):
         print(n)
         if n!= 0:
             if differences !=  []:
-                #self.ids['gl'].rows = 3
                 self.ids['gl'].clear_widgets()
-                for i in range(1, n):
+                for i in range(1, n+1):
                     self.ids['gl'].add_widget(Label(text = data[i]))
-                    if differences[i-1] != -1:
+                    if differences[i-1]:
                         self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
-                        #self.ids["label_{}".format(i)].text = data[i]
                         print(data[i])
+                        if differences[i-1] < 0.55:
+                            print("It`s you")
                         print(i)
                     else:
                         print("Лицо на изображении не найдено")
