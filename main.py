@@ -1,4 +1,3 @@
-
 import os
 from kivy.clock import Clock
 from kivy.app import App
@@ -16,6 +15,11 @@ import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
 from nnc import *
+import socket
+
+
+
+
 f = True
 n = 0
 data = []
@@ -97,7 +101,17 @@ class CameraClick(PageLayout):
             global differences
             camera = self.ids['camera']
             camera.export_to_png("IMG_now.jpg")
-            differences = what_difference(n)
+            s = socket.socket() 
+
+            s.connect(('localhost', 9090))  
+            op = open("IMG_now.jpg", 'rb')  
+            data = op.read(1024)
+            s.send(data) 
+            op.close()  
+            s.shutdown(socket.SHUT_WR)
+
+            #differences = what_difference(n)
+
             print("Captured")
         
             
