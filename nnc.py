@@ -74,9 +74,6 @@ def make_descriptors():
         f = True
     if (f):
         face_descriptor2 = facerec.compute_face_descriptor(img, shape)
-        f = open("IMG_NOW.txt", "w")
-        for i in face_descriptor1:
-            f.write(str(i))
-            f.write("\n")
+        return face_descriptor2
     else:
         print("Face not found")

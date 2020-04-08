@@ -27,26 +27,21 @@ def update_db(n, path):
         f.write(str(i))
         f.write("\n")
 
-def what_difference(path):
+def what_difference():
     #извлекаем модели
     sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
     facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
     detector = dlib.get_frontal_face_detector()
     
     #Второе лицо
-    img = io.imread(path)
-    # win2 = dlib.image_window()
-    # win2.clear_overlay()
-    # win2.set_image(img)
+    img = io.imread(os.path.join("db", "IMG_now.jpg"))
+
     dets_webcam = detector(img, 1)
     f = False
     for k, d in enumerate(dets_webcam):
         print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
             k, d.left(), d.top(), d.right(), d.bottom()))
         shape = sp(img, d)
-        #win2.clear_overlay()
-        #win2.add_overlay(d)
-        #win2.add_overlay(shape)
         f = True
     if (f):
         face_descriptor2 = facerec.compute_face_descriptor(img, shape)

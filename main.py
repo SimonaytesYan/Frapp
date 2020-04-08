@@ -39,7 +39,7 @@ Builder.load_string('''
         orintation: 'vertical'
         Camera:
             id: camera
-        #    resolution: (640, 480)
+            resolution: (640, 480)
             play: False
             size_hint: (1, .5)
         BoxLayout:
@@ -59,11 +59,6 @@ Builder.load_string('''
                 height: '48px'
                 text: 'Add new'
                 on_press: root.add(input_path.text, input_name.text)
-            Button:
-                size_hint_y: None
-                height: '48px'
-                text: 'Click'
-                on_press: root.capture()
 
             BoxLayout:
                 orintation: 'vertical'
@@ -97,31 +92,35 @@ class CameraClick(PageLayout):
     def play(self):
         global f
         if f:
-            event = Clock.schedule_interval(self.capture, 3)
+            event = Clock.schedule_interval(self.capture, 25)
+            event1 = Clock.schedule_once(self.capture, 2)
         f = False
 
         self.ids['camera'].play = not self.ids['camera'].play
-        
-    def capture(self):
+    
+    def tostrnahfromlist(self, s):
+        global differences
+        st = ''
+        for i in s:
+            if i  != ' ':
+                st += i
+            else:
+                differences.append(float(st))
+                st = ''
+        print(differences)
+
+    def capture(self, _):
         if self.ids['camera'].play:
             global differences
             camera = self.ids['camera']
             camera.export_to_png("IMG_now.jpg")
             print("Captured")
-        url='http://127.0.0.1:5000/'
-        make_descriptors()
-        files={'files': open('IMG_NOW.txt','rb')}
-        r=requests.post(url,files=files)
 
-            
-            
-
-        #differences = what_difference(n)
-
-        
-        
-        
-            
+            url='http://127.0.0.1:5000/'
+            values={'file' : 'file.jpg', 'OUT':'csv'}
+            files={'file': open('IMG_now.jpg','rb')}
+            r=requests.post(url,files=files, data = values)
+            self.tostrnahfromlist(r.text)
 
     def add(self, path, name):
         global n
@@ -142,7 +141,7 @@ class CameraClick(PageLayout):
                     if differences[i-1]:
                         self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
                         print(data[i])
-                        if differences[i-1] < 0.55:
+                        if float(differences[i-1]) < 0.55:
                             print("It`s you")
                         print(i)
                     else:
