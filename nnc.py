@@ -58,4 +58,25 @@ def what_difference(n):
     else:
         print("Face not found")
         return 0
+
+def make_descriptors():
+    sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
+    facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
+    detector = dlib.get_frontal_face_detector()
+    img = io.imread("IMG_now.jpg")
     
+    dets_webcam = detector(img, 1)
+    f = False
+    for k, d in enumerate(dets_webcam):
+        print("Detection {}: Left: {} Top: {} Right: {} Bottom: {}".format(
+            k, d.left(), d.top(), d.right(), d.bottom()))
+        shape = sp(img, d)
+        f = True
+    if (f):
+        face_descriptor2 = facerec.compute_face_descriptor(img, shape)
+        f = open("IMG_NOW.txt", "w")
+        for i in face_descriptor1:
+            f.write(str(i))
+            f.write("\n")
+    else:
+        print("Face not found")

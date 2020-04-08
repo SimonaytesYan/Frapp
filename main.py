@@ -15,8 +15,8 @@ import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
 from nnc import *
-import socket
 
+import requests
 
 
 
@@ -39,7 +39,7 @@ Builder.load_string('''
         orintation: 'vertical'
         Camera:
             id: camera
-            resolution: (640, 480)
+        #    resolution: (640, 480)
             play: False
             size_hint: (1, .5)
         BoxLayout:
@@ -59,6 +59,12 @@ Builder.load_string('''
                 height: '48px'
                 text: 'Add new'
                 on_press: root.add(input_path.text, input_name.text)
+            Button:
+                size_hint_y: None
+                height: '48px'
+                text: 'Click'
+                on_press: root.capture()
+
             BoxLayout:
                 orintation: 'vertical'
                 Label:
@@ -96,23 +102,24 @@ class CameraClick(PageLayout):
 
         self.ids['camera'].play = not self.ids['camera'].play
         
-    def capture(self, _):
+    def capture(self):
         if self.ids['camera'].play:
             global differences
             camera = self.ids['camera']
             camera.export_to_png("IMG_now.jpg")
-            s = socket.socket() 
-
-            s.connect(('localhost', 9090))  
-            op = open("IMG_now.jpg", 'rb')  
-            data = op.read(1024)
-            s.send(data) 
-            op.close()  
-            s.shutdown(socket.SHUT_WR)
-
-            #differences = what_difference(n)
-
             print("Captured")
+        url='http://127.0.0.1:5000/'
+        make_descriptors()
+        files={'files': open('IMG_NOW.txt','rb')}
+        r=requests.post(url,files=files)
+
+            
+            
+
+        #differences = what_difference(n)
+
+        
+        
         
             
 
