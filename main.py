@@ -14,7 +14,6 @@ from kivy.uix.textinput import TextInput
 import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
-from nnc import *
 
 import requests
 
@@ -117,7 +116,7 @@ class CameraClick(PageLayout):
             print("Captured")
 
             url='http://127.0.0.1:5000/'
-            values={'file' : 'file.jpg', 'OUT':'csv'}
+            values={'file' : 'file.jpg', 'OUT':'csv', 'what' : 'lol'}
             files={'file': open('IMG_now.jpg','rb')}
             r=requests.post(url,files=files, data = values)
             self.tostrnahfromlist(r.text)
@@ -125,12 +124,10 @@ class CameraClick(PageLayout):
     def add(self, path, name):
         global n
         n += 1
-        data.append(str(name)+"\n")
-        data[0]  = str(n) + "\n"
-        f = open(os.path.join("db", "number.txt"), "w")
-        for i in data:
-            f.write(i)
-        update_db(n, path)
+        url='http://127.0.0.1:5000/'
+        values={'file' : 'file.jpg', 'OUT':'csv', 'what' : 'add', 'name' : name}
+        files={'file': open(path,'rb')}
+        r=requests.post(url,files=files, data = values)
     def show_all(self):
         print(n)
         if n!= 0:

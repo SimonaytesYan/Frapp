@@ -20,6 +20,7 @@ def allowed_file(filename):
 @app.route('/', methods=['POST'])
 def upload_file():
     if request.method == 'POST':
+        
         if 'file' not in request.files:
             print('No file part')
             flash('No file part')
@@ -30,19 +31,42 @@ def upload_file():
             print('No selected file')
             flash('No selected file')
             return redirect(request.url)
+        if request.values['what']== 'lol':
+            if file and allowed_file(file.filename):
+                print ("Start")
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+                l = what_difference()
+                s = ''
+                for i in l:
+                    s+= str(i) + ' '
+                print (l)
+                print (s) 
+                return s
+        else:
+            if file and allowed_file(file.filename):    
+                print ("Start adding")
+                
+                name = request.values['name']
 
-        if file and allowed_file(file.filename):
-            print ("Start")
-            filename = secure_filename(file.filename)
-            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
-            l = what_difference()
-            s = ''
-            for i in l:
-                s+= str(i) + ' '
-            print (l)
-            print (s) 
-            return s
-    #return what_difference1()
+                data = []
+                with open(os.path.join("db", "number.txt"), "r") as f:
+                    for line in f:
+                        data.append(line)
+
+                n = int(data[0])
+                n+=1
+                data.append(str(name)+"\n")
+                data[0]  = str(n) + "\n"
+
+                f = open(os.path.join("db", "number.txt"), "w")
+                for i in data:
+                    f.write(i)
+                f.close()
+                filename = secure_filename(file.filename)
+                file.save(os.path.join(app.config['UPLOAD_FOLDER'], "IMG_{}.jpg".format(n-1)))
+                update_db()
+                return "lol"
 
 @app.route('/')
 def index():

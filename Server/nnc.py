@@ -7,13 +7,16 @@ with open(os.path.join("db", "number.txt"), "r") as f:
     for line in f:
         data.append(line)
 n = int(data[0])
-def update_db(n, path):
-        
+def update_db():
+    data = []
+    with open(os.path.join("db", "number.txt"), "r") as f:
+        for line in f:
+            data.append(line)
+    n = int(data[0])
     sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
     facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
     detector = dlib.get_frontal_face_detector()
-    img = io.imread(path)
-    io.imsave(os.path.join("db","IMG_{}.jpg".format(n-1)), img)
+    img = io.imread(os.path.join("db","IMG_{}.jpg".format(n-1)))
     dets = detector(img, 1)
     print(dets)
     for k, d in enumerate(dets):
