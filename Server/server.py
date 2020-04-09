@@ -37,12 +37,15 @@ def upload_file():
                 filename = secure_filename(file.filename)
                 file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
                 l = what_difference()
-                s = ''
-                for i in l:
-                    s+= str(i) + ' '
-                print (l)
-                print (s) 
-                return s
+                if l != 0:
+                    s = ''
+                    for i in l:
+                        s+= str(i) + ' '
+                    print (l)
+                    print (s) 
+                    return s
+                else:
+                    return "face_not_found"
         else:
             if file and allowed_file(file.filename):    
                 print ("Start adding")

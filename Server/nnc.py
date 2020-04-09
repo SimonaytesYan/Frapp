@@ -61,25 +61,4 @@ def what_difference():
     else:
         print("Face not found")
         return 0
-
-def what_difference1():
-    #извлекаем модели
-    sp = dlib.shape_predictor('shape_predictor_68_face_landmarks.dat')
-    facerec = dlib.face_recognition_model_v1('dlib_face_recognition_resnet_model_v1.dat')
-    detector = dlib.get_frontal_face_detector()
-    
-    face_descriptor2 = []
-    with open(os.path.join("db","IMG_NOW.txt"), "r") as f:
-            for line in f:
-                face_descriptor2.append([float(x) for x in line.split()])
-    a = []
-    for i in range(n):
-        face_descriptor1 = []
-        with open(os.path.join("db","IMG_{}.txt".format(i)), "r") as f:
-            for line in f:
-                face_descriptor1.append([float(x) for x in line.split()])
-        #Рассчитываем Евклидово расстояние между двумя дексрипторами лиц
-        a.append(float(distance.euclidean(face_descriptor1, face_descriptor2)))
-    #print(a)
-    return a
     

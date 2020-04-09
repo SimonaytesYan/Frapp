@@ -33,51 +33,72 @@ print(data)
 
 Builder.load_string('''
 <CameraClick>:
-    BoxLayout:
-        id: lol
-        orintation: 'vertical'
-        Camera:
-            id: camera
-            resolution: (640, 480)
-            play: False
-            size_hint: (1, .5)
+    AnchorLayout:
+        anchor_x: 'center'
+        anchor_y: 'center'
+        canvas:
+            Color:
+                rgba: .80,.90,.80,1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        
         BoxLayout:
-            orintation: 'vertical'
-            ToggleButton:
-                text: 'Play'
-                on_press: root.play()
-                size_hint_y: None
-                height: '48px'
-            Button:
-                size_hint_y: None
-                height: '48px'
-                text: 'All image'
-                on_press: root.show_all()
-            Button:
-                size_hint_y: None
-                height: '48px'
-                text: 'Add new'
-                on_press: root.add(input_path.text, input_name.text)
-
+            id: lol
+            orientation:'vertical'
+            Camera:
+                id: camera
+                resolution: (640, 480)
+                play: False
+                size_hint: (1, 1)
             BoxLayout:
-                orintation: 'vertical'
+                anchor_y: 'center'
+                orientation:'vertical'
+                size_hint: [1,0.4]
+                padding: '3px','3px','3px','3px'
+                ToggleButton:
+                    text: 'Play'
+                    background_color: 0,0,0.3,.5
+                    on_press: root.play()
+                Button:
+                    background_color: 0,0,0.3,.5
+                    pos_hint: {'right': 1}
+                    text: 'All image'
+                    on_press: root.show_all()
+                Button:
+                    background_color: 0,0,0.3,.5
+                    text: 'Add new file in db'
+                    on_press: root.add(input_path.text, input_name.text)
+            BoxLayout:
+                orientation: "vertical"
+                size_hint: [1,0.4]
+                padding: '3px','3px','3px','3px'
                 Label:
                     text: "name"
-                    size_hint: (1, .5)
+                    color: 0,0,0.3,.5
+                    size_hint: (1, 1)
                 TextInput:
-                    size_hint_y: None
+                    #size_hint_y: None
                     size_hint_x: 1
                     id: input_name
                 Label:
                     text: "path"
-                    size_hint: (1, .5)
+                    color: 0,0,0.3,.5
+                    size_hint: (1, 1)
                 TextInput:
-                    size_hint_y: None
+                    #size_hint_y: None
                     size_hint_x: 1
                     id: input_path
     GridLayout:
         id: gl
         cols: 1
+        canvas:
+            Color:
+                rgba: .80,.80,.90,1
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        
 
 ''')
 
@@ -119,7 +140,10 @@ class CameraClick(PageLayout):
             values={'file' : 'file.jpg', 'OUT':'csv', 'what' : 'lol'}
             files={'file': open('IMG_now.jpg','rb')}
             r=requests.post(url,files=files, data = values)
-            self.tostrnahfromlist(r.text)
+            if r == "face_not_found":
+                print("Face not found")
+            else:
+                self.tostrnahfromlist(r.text)
 
     def add(self, path, name):
         global n
@@ -134,9 +158,9 @@ class CameraClick(PageLayout):
             if differences !=  []:
                 self.ids['gl'].clear_widgets()
                 for i in range(1, n+1):
-                    self.ids['gl'].add_widget(Label(text = data[i]))
+                    self.ids['gl'].add_widget(Label(text = data[i], color = [0,0,0,1]))
                     if differences[i-1]:
-                        self.ids['gl'].add_widget(Label(text = str(differences[i-1])))
+                        self.ids['gl'].add_widget(Label(text = str(differences[i-1]), color = [0,0,0,1]))
                         print(data[i])
                         if float(differences[i-1]) < 0.55:
                             print("It`s you")
