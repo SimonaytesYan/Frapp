@@ -33,46 +33,49 @@ print(data)
 
 Builder.load_string('''
 <CameraClick>:
-    AnchorLayout:
-        anchor_x: 'center'
-        anchor_y: 'center'
-        canvas:
-            Color:
-                rgba: .80,.90,.80,1
-            Rectangle:
-                size: self.size
-                pos: self.pos
-        
+    PageLayout:
         BoxLayout:
-            id: lol
-            orientation:'vertical'
+            orientation: "vertical"
+            anchor_x: 'center'
+            anchor_y: 'center'
+            canvas:
+                Color:
+                    rgba: .80,.90,.80,1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
             Camera:
                 id: camera
                 resolution: (640, 480)
                 play: False
                 size_hint: (1, 1)
-            BoxLayout:
+            AnchorLayout:
+                anchor_x: 'center'
                 anchor_y: 'center'
-                orientation:'vertical'
-                size_hint: [1,0.4]
-                padding: '3px','3px','3px','3px'
                 ToggleButton:
+                    size_hint: [0.3, 0.2]
                     text: 'Play'
-                    background_color: 0,0,0.3,.5
+                    background_color: .70,.80,.70,1
                     on_press: root.play()
-                Button:
-                    background_color: 0,0,0.3,.5
-                    pos_hint: {'right': 1}
-                    text: 'All image'
-                    on_press: root.show_all()
-                Button:
-                    background_color: 0,0,0.3,.5
-                    text: 'Add new file in db'
-                    on_press: root.add(input_path.text, input_name.text)
+        AnchorLayout:
+            anchor_x: 'center'
+            anchor_y: 'center' 
+            canvas:
+                Color:
+                    rgba: .90,.80,.80,1
+                Rectangle:
+                    size: self.size
+                    pos: self.pos       
             BoxLayout:
                 orientation: "vertical"
-                size_hint: [1,0.4]
+                size_hint: [0.4,0.4]
                 padding: '3px','3px','3px','3px'
+                
+                Label:
+                    text: "Add new file in db"
+                    test_size: (200, None)
+                    color: 0.3,0,0,.5
+                    size_hint: (1, 1)
                 Label:
                     text: "name"
                     color: 0,0,0.3,.5
@@ -89,17 +92,36 @@ Builder.load_string('''
                     #size_hint_y: None
                     size_hint_x: 1
                     id: input_path
-    GridLayout:
-        id: gl
-        cols: 1
+                Button:
+                    background_color: 0,0,0.3,.5
+                    text: 'Add'
+                    on_press: root.add(input_path.text, input_name.text)
+
+    AnchorLayout:
+        
+        anchor_x: 'center'
+        anchor_y: 'top'
         canvas:
             Color:
                 rgba: .80,.80,.90,1
             Rectangle:
                 size: self.size
                 pos: self.pos
+        Button:
+            background_color: 0,0,0.3,.5
+            pos_hint: {'right': 1}
+            size_hint: [1, 0.1]
+            text: 'Reload'
+            on_press: root.show_all()
         
-
+        BoxLayout:
+            id: gl
+            orientation: 'vertical'
+            #size_hint: [0.8,0.8]
+       
+        
+            
+            
 ''')
 
 
@@ -147,6 +169,8 @@ class CameraClick(PageLayout):
 
     def add(self, path, name):
         global n
+        global data
+        data.append(name)
         n += 1
         url='http://127.0.0.1:5000/'
         values={'file' : 'file.jpg', 'OUT':'csv', 'what' : 'add', 'name' : name}
