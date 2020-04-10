@@ -14,6 +14,7 @@ from kivy.uix.textinput import TextInput
 import time
 import subprocess
 from kivy.uix.screenmanager import ScreenManager, Screen
+from kivy.uix.image import Image
 
 import requests
 
@@ -114,7 +115,8 @@ Builder.load_string('''
             text: 'Reload'
             on_press: root.show_all()
         
-        BoxLayout:
+        GridLayout:
+            cols: 2
             id: gl
             orientation: 'vertical'
             #size_hint: [0.8,0.8]
@@ -134,8 +136,8 @@ class CameraClick(PageLayout):
     def play(self):
         global f
         if f:
-            event = Clock.schedule_interval(self.capture, 25)
-            event1 = Clock.schedule_once(self.capture, 2)
+            event = Clock.schedule_interval(self.capture, 4)
+            #event1 = Clock.schedule_once(self.capture, 2)
         f = False
 
         self.ids['camera'].play = not self.ids['camera'].play
@@ -183,6 +185,7 @@ class CameraClick(PageLayout):
                 self.ids['gl'].clear_widgets()
                 for i in range(1, n+1):
                     self.ids['gl'].add_widget(Label(text = data[i], color = [0,0,0,1]))
+                    #self.ids['gl'].add_widget(Image(source=os.path.join("bd", "IMG_{}.png".format(i))))
                     if differences[i-1]:
                         self.ids['gl'].add_widget(Label(text = str(differences[i-1]), color = [0,0,0,1]))
                         print(data[i])
@@ -190,11 +193,12 @@ class CameraClick(PageLayout):
                             print("It`s you")
                         print(i)
                     else:
-                        print("Лицо на изображении не найдено")
+                        self.ids['gl'].add_widget(Label(text = "Лицо на изображение не найдено", color = [0,0,0,1]))
             else:
+                self.ids['gl'].add_widget(Label(text = "Сделайте фото ", color = [0,0,0,1]))
                 print("Сделайте фото")
         else:
-            print("Изображений не найдено")
+            self.ids['gl'].add_widget(Label(text = "Изображений в базе данных не найдено", color = [0,0,0,1]))
     def out(self):
         TestCamera.stop()
 
