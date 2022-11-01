@@ -1,3 +1,3 @@
 # Frapp
-Face recognizion app
+Face recognizion app \
 Application for Windows to recognize faces from web camera
